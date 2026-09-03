@@ -1,1 +1,128 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golf Voice Test</title>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+
+    button {
+      font-size: 20px;
+      padding: 15px 30px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #status {
+      margin: 25px 0;
+      font-size: 18px;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      min-height: 40px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>🎤 Golf Voice Test</h2>
+
+  <p id="status">Ready</p>
+
+  <button id="voiceButton" onclick="startListening()">
+    🎤 Tap to Speak
+  </button>
+
+  <div id="result">
+    Your words will appear here
+  </div>
+
+<script>
+
+  const Speech =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  let recognition = null;
+
+  if (Speech) {
+
+    recognition = new Speech();
+
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
+
+    recognition.onstart = function() {
+      document.getElementById("status").innerText =
+        "🎤 Listening...";
+    };
+
+    recognition.onresult = function(event) {
+
+      const text =
+        event.results[0][0].transcript;
+
+      document.getElementById("result").innerText =
+        text;
+
+      document.getElementById("status").innerText =
+        "✅ Got it";
+
+    };
+
+    recognition.onerror = function(event) {
+
+      document.getElementById("status").innerText =
+        "❌ Error: " + event.error;
+
+      console.log("Speech error:", event);
+
+    };
+
+    recognition.onend = function() {
+
+      console.log("Speech recognition ended");
+
+    };
+
+  } else {
+
+    document.getElementById("status").innerText =
+      "❌ Speech recognition is not supported by this browser.";
+
+  }
+
+
+  function startListening() {
+
+    if (!recognition) {
+      alert("Speech recognition is not supported.");
+      return;
+    }
+
+    document.getElementById("status").innerText =
+      "Starting microphone...";
+
+    recognition.start();
+
+  }
+
+</script>
+
+</body>
+</html>
